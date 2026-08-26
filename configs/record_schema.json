@@ -1,0 +1,30 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "type": "object",
+  "required": ["suite", "task_id", "seed", "condition", "shift_id", "success", "steps"],
+  "properties": {
+    "suite": {"type": "string"},
+    "task_id": {"type": "integer"},
+    "seed": {"type": "integer"},
+    "condition": {"enum": ["frozen", "online_persistent", "online_reset", "buffer_offline"]},
+    "shift_id": {"type": "string"},
+    "success": {"type": "boolean"},
+    "valid": {"type": "boolean"},
+    "steps": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["t", "error"],
+        "properties": {
+          "t": {"type": "integer"},
+          "error": {"type": "boolean"},
+          "update_applied": {"type": "boolean"},
+          "harmful_update": {"type": "boolean"},
+          "state_ood": {"type": "boolean"},
+          "action_delta_l2": {"type": "number"},
+          "adaptive_state_norm": {"type": "number"}
+        }
+      }
+    }
+  }
+}

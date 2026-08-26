@@ -1,0 +1,29 @@
+{
+  "hardware": {
+    "gpu": "NVIDIA GeForce RTX 3080",
+    "vram_mib": 10240,
+    "driver": "595.84",
+    "driver_cuda": "13.2"
+  },
+  "software": {
+    "python": "3.12.14",
+    "torch": "2.11.0+cu128",
+    "transformers": "5.5.4",
+    "mujoco": "3.8.1",
+    "lerobot_commit": "f2c548e24dfec216742c24d5934cac045885a416",
+    "libero_commit": "8f1084e3132a39270c3a13ebe37270a43ece2a01",
+    "pdf_commit": "992756c2b585f9f882a0e164513cfb6f7c5a4d5a"
+  },
+  "model": {
+    "hub_id": "HuggingFaceVLA/smolvla_libero",
+    "hub_revision": "6721902bc4d61e50a3bfdb11dfb4cb626f05d102",
+    "model_safetensors_sha256": "71d9563c8295284acba8fc2d5c19de000d6fe9ba58a406832af7ef3d221ed52f"
+  },
+  "dataset": {
+    "hub_id": "HuggingFaceVLA/libero",
+    "hub_revision": "86958911c0f959db2bbbdb107eb3e17c5f9c798e",
+    "total_episodes": 1693,
+    "total_frames": 273465,
+    "total_tasks": 40
+  }
+}

@@ -1,0 +1,863 @@
+{
+  "record_n": 400,
+  "outcomes": {
+    "online_persistent": {
+      "paired_n": 100,
+      "frozen_success_n": 49,
+      "frozen_failure_n": 51,
+      "corruption_n": 30,
+      "corruption_rate": 0.6122448979591837,
+      "rescue_n": 13,
+      "rescue_rate": 0.2549019607843137
+    },
+    "online_reset": {
+      "paired_n": 100,
+      "frozen_success_n": 49,
+      "frozen_failure_n": 51,
+      "corruption_n": 6,
+      "corruption_rate": 0.12244897959183673,
+      "rescue_n": 10,
+      "rescue_rate": 0.19607843137254902
+    },
+    "buffer_offline": {
+      "paired_n": 100,
+      "frozen_success_n": 49,
+      "frozen_failure_n": 51,
+      "corruption_n": 2,
+      "corruption_rate": 0.04081632653061224,
+      "rescue_n": 5,
+      "rescue_rate": 0.09803921568627451
+    },
+    "fisher_tests_on_frozen_success": {
+      "persistent_vs_reset_on_frozen_success": {
+        "table": [
+          [
+            30,
+            19
+          ],
+          [
+            6,
+            43
+          ]
+        ],
+        "odds_ratio": 11.31578947368421,
+        "p_value": 7.130397612098362e-07,
+        "note": "descriptive 2x2 Fisher test; paired bootstrap CIs are primary"
+      },
+      "persistent_vs_buffer_offline_on_frozen_success": {
+        "table": [
+          [
+            30,
+            19
+          ],
+          [
+            2,
+            47
+          ]
+        ],
+        "odds_ratio": 37.10526315789474,
+        "p_value": 6.910996906629404e-10,
+        "note": "descriptive 2x2 Fisher test; paired bootstrap CIs are primary"
+      }
+    }
+  },
+  "accumulation": {
+    "online_persistent": [
+      {
+        "update_count": 1,
+        "n": 500,
+        "mean_state_norm": 0.053308925777673724,
+        "mean_action_delta": 0.0150323868393898,
+        "harmful_rate": 0.002
+      },
+      {
+        "update_count": 2,
+        "n": 500,
+        "mean_state_norm": 0.09236840706318616,
+        "mean_action_delta": 0.027121011565439404,
+        "harmful_rate": 0.024
+      },
+      {
+        "update_count": 3,
+        "n": 500,
+        "mean_state_norm": 0.12408247396349907,
+        "mean_action_delta": 0.037647165925242004,
+        "harmful_rate": 0.066
+      },
+      {
+        "update_count": 4,
+        "n": 500,
+        "mean_state_norm": 0.150344252102077,
+        "mean_action_delta": 0.044171277792192994,
+        "harmful_rate": 0.068
+      },
+      {
+        "update_count": 5,
+        "n": 500,
+        "mean_state_norm": 0.17345997918397188,
+        "mean_action_delta": 0.04998065484501422,
+        "harmful_rate": 0.06
+      },
+      {
+        "update_count": 6,
+        "n": 500,
+        "mean_state_norm": 0.20361529156565666,
+        "mean_action_delta": 0.05980913924798369,
+        "harmful_rate": 0.072
+      },
+      {
+        "update_count": 7,
+        "n": 500,
+        "mean_state_norm": 0.23036407627165317,
+        "mean_action_delta": 0.06762713745981455,
+        "harmful_rate": 0.07
+      },
+      {
+        "update_count": 8,
+        "n": 500,
+        "mean_state_norm": 0.24676988571882247,
+        "mean_action_delta": 0.07315516272187234,
+        "harmful_rate": 0.076
+      },
+      {
+        "update_count": 9,
+        "n": 500,
+        "mean_state_norm": 0.2608800817281008,
+        "mean_action_delta": 0.07611923734098673,
+        "harmful_rate": 0.072
+      },
+      {
+        "update_count": 10,
+        "n": 500,
+        "mean_state_norm": 0.27286460779607297,
+        "mean_action_delta": 0.08099947789683938,
+        "harmful_rate": 0.05
+      },
+      {
+        "update_count": 11,
+        "n": 500,
+        "mean_state_norm": 0.29322820104658603,
+        "mean_action_delta": 0.09132720182836056,
+        "harmful_rate": 0.042
+      },
+      {
+        "update_count": 12,
+        "n": 500,
+        "mean_state_norm": 0.3114754909276962,
+        "mean_action_delta": 0.1076289851255715,
+        "harmful_rate": 0.028
+      },
+      {
+        "update_count": 13,
+        "n": 500,
+        "mean_state_norm": 0.32789522588253023,
+        "mean_action_delta": 0.1167741202712059,
+        "harmful_rate": 0.028
+      },
+      {
+        "update_count": 14,
+        "n": 500,
+        "mean_state_norm": 0.3466392420232296,
+        "mean_action_delta": 0.13121885020285845,
+        "harmful_rate": 0.016
+      },
+      {
+        "update_count": 15,
+        "n": 500,
+        "mean_state_norm": 0.3607226200401783,
+        "mean_action_delta": 0.13999293468892574,
+        "harmful_rate": 0.02
+      },
+      {
+        "update_count": 16,
+        "n": 500,
+        "mean_state_norm": 0.36849513456225397,
+        "mean_action_delta": 0.14272894003987313,
+        "harmful_rate": 0.03
+      },
+      {
+        "update_count": 17,
+        "n": 500,
+        "mean_state_norm": 0.37530821323394775,
+        "mean_action_delta": 0.14540948158502578,
+        "harmful_rate": 0.018
+      },
+      {
+        "update_count": 18,
+        "n": 500,
+        "mean_state_norm": 0.38909786120057105,
+        "mean_action_delta": 0.15248843527585268,
+        "harmful_rate": 0.018
+      },
+      {
+        "update_count": 19,
+        "n": 500,
+        "mean_state_norm": 0.4060121178627014,
+        "mean_action_delta": 0.16606361789256335,
+        "harmful_rate": 0.014
+      },
+      {
+        "update_count": 20,
+        "n": 500,
+        "mean_state_norm": 0.4164553590118885,
+        "mean_action_delta": 0.17227496587485075,
+        "harmful_rate": 0.004
+      },
+      {
+        "update_count": 21,
+        "n": 500,
+        "mean_state_norm": 0.4255195052921772,
+        "mean_action_delta": 0.17838877109251916,
+        "harmful_rate": 0.006
+      },
+      {
+        "update_count": 22,
+        "n": 500,
+        "mean_state_norm": 0.4324323055148125,
+        "mean_action_delta": 0.18396905416995288,
+        "harmful_rate": 0.01
+      },
+      {
+        "update_count": 23,
+        "n": 500,
+        "mean_state_norm": 0.4360951599478722,
+        "mean_action_delta": 0.18619768745079637,
+        "harmful_rate": 0.01
+      },
+      {
+        "update_count": 24,
+        "n": 494,
+        "mean_state_norm": 0.4458938150210419,
+        "mean_action_delta": 0.19208938895012082,
+        "harmful_rate": 0.008097165991902834
+      },
+      {
+        "update_count": 25,
+        "n": 482,
+        "mean_state_norm": 0.45745730993658673,
+        "mean_action_delta": 0.19983517420690708,
+        "harmful_rate": 0.012448132780082987
+      },
+      {
+        "update_count": 26,
+        "n": 470,
+        "mean_state_norm": 0.46201935965330043,
+        "mean_action_delta": 0.20409724759532416,
+        "harmful_rate": 0.010638297872340425
+      },
+      {
+        "update_count": 27,
+        "n": 470,
+        "mean_state_norm": 0.4689998449163234,
+        "mean_action_delta": 0.20665519692479295,
+        "harmful_rate": 0.010638297872340425
+      },
+      {
+        "update_count": 28,
+        "n": 464,
+        "mean_state_norm": 0.47672796442077076,
+        "mean_action_delta": 0.2091838967311999,
+        "harmful_rate": 0.010775862068965518
+      },
+      {
+        "update_count": 29,
+        "n": 453,
+        "mean_state_norm": 0.4826478648922564,
+        "mean_action_delta": 0.2135423898293943,
+        "harmful_rate": 0.017660044150110375
+      },
+      {
+        "update_count": 30,
+        "n": 435,
+        "mean_state_norm": 0.4855582803487778,
+        "mean_action_delta": 0.218451593769179,
+        "harmful_rate": 0.004597701149425287
+      },
+      {
+        "update_count": 31,
+        "n": 428,
+        "mean_state_norm": 0.48763741664240295,
+        "mean_action_delta": 0.22043855829495135,
+        "harmful_rate": 0.007009345794392523
+      },
+      {
+        "update_count": 32,
+        "n": 414,
+        "mean_state_norm": 0.4959590600596534,
+        "mean_action_delta": 0.22505696468811104,
+        "harmful_rate": 0.00966183574879227
+      },
+      {
+        "update_count": 33,
+        "n": 406,
+        "mean_state_norm": 0.49753483344475036,
+        "mean_action_delta": 0.23167640855306476,
+        "harmful_rate": 0.009852216748768473
+      },
+      {
+        "update_count": 34,
+        "n": 396,
+        "mean_state_norm": 0.5015758993950757,
+        "mean_action_delta": 0.23306924622091982,
+        "harmful_rate": 0.007575757575757576
+      },
+      {
+        "update_count": 35,
+        "n": 385,
+        "mean_state_norm": 0.5026849376690852,
+        "mean_action_delta": 0.23700400083870082,
+        "harmful_rate": 0.01038961038961039
+      },
+      {
+        "update_count": 36,
+        "n": 385,
+        "mean_state_norm": 0.5057174106696983,
+        "mean_action_delta": 0.23660264688652832,
+        "harmful_rate": 0.0025974025974025974
+      },
+      {
+        "update_count": 37,
+        "n": 382,
+        "mean_state_norm": 0.508248079899718,
+        "mean_action_delta": 0.237974589680814,
+        "harmful_rate": 0.005235602094240838
+      },
+      {
+        "update_count": 38,
+        "n": 375,
+        "mean_state_norm": 0.509753923813502,
+        "mean_action_delta": 0.2388036728700002,
+        "harmful_rate": 0.0026666666666666666
+      },
+      {
+        "update_count": 39,
+        "n": 375,
+        "mean_state_norm": 0.5120954708258311,
+        "mean_action_delta": 0.24113415078322092,
+        "harmful_rate": 0.005333333333333333
+      },
+      {
+        "update_count": 40,
+        "n": 372,
+        "mean_state_norm": 0.5159981438229161,
+        "mean_action_delta": 0.2426562877672334,
+        "harmful_rate": 0.005376344086021506
+      },
+      {
+        "update_count": 41,
+        "n": 370,
+        "mean_state_norm": 0.5213614674033346,
+        "mean_action_delta": 0.2450878839637782,
+        "harmful_rate": 0.005405405405405406
+      },
+      {
+        "update_count": 42,
+        "n": 370,
+        "mean_state_norm": 0.5217462045115393,
+        "mean_action_delta": 0.24506412563291755,
+        "harmful_rate": 0.002702702702702703
+      },
+      {
+        "update_count": 43,
+        "n": 370,
+        "mean_state_norm": 0.5237068074780542,
+        "mean_action_delta": 0.24426366515658998,
+        "harmful_rate": 0.002702702702702703
+      },
+      {
+        "update_count": 44,
+        "n": 367,
+        "mean_state_norm": 0.5253727958215355,
+        "mean_action_delta": 0.24583227079798156,
+        "harmful_rate": 0.0027247956403269754
+      },
+      {
+        "update_count": 45,
+        "n": 365,
+        "mean_state_norm": 0.5277126962191439,
+        "mean_action_delta": 0.24557302902414374,
+        "harmful_rate": 0.0027397260273972603
+      },
+      {
+        "update_count": 46,
+        "n": 361,
+        "mean_state_norm": 0.523966946925483,
+        "mean_action_delta": 0.2449118001309128,
+        "harmful_rate": 0.002770083102493075
+      },
+      {
+        "update_count": 47,
+        "n": 360,
+        "mean_state_norm": 0.525162725812859,
+        "mean_action_delta": 0.2451928759407666,
+        "harmful_rate": 0.002777777777777778
+      },
+      {
+        "update_count": 48,
+        "n": 360,
+        "mean_state_norm": 0.5203904670973619,
+        "mean_action_delta": 0.24211127037803332,
+        "harmful_rate": 0.0
+      },
+      {
+        "update_count": 49,
+        "n": 350,
+        "mean_state_norm": 0.5223949412788663,
+        "mean_action_delta": 0.2430147082890783,
+        "harmful_rate": 0.0
+      },
+      {
+        "update_count": 50,
+        "n": 340,
+        "mean_state_norm": 0.5209615103462163,
+        "mean_action_delta": 0.24390287050867782,
+        "harmful_rate": 0.0
+      },
+      {
+        "update_count": 51,
+        "n": 340,
+        "mean_state_norm": 0.5187302104690495,
+        "mean_action_delta": 0.24356596007504883,
+        "harmful_rate": 0.0
+      },
+      {
+        "update_count": 52,
+        "n": 340,
+        "mean_state_norm": 0.5150139822679407,
+        "mean_action_delta": 0.24410982585566884,
+        "harmful_rate": 0.0029411764705882353
+      },
+      {
+        "update_count": 53,
+        "n": 340,
+        "mean_state_norm": 0.519918243674671,
+        "mean_action_delta": 0.24429496204590095,
+        "harmful_rate": 0.0029411764705882353
+      },
+      {
+        "update_count": 54,
+        "n": 340,
+        "mean_state_norm": 0.5221237698022057,
+        "mean_action_delta": 0.2459917133783593,
+        "harmful_rate": 0.0029411764705882353
+      },
+      {
+        "update_count": 55,
+        "n": 340,
+        "mean_state_norm": 0.5191063780118438,
+        "mean_action_delta": 0.24420651878942462,
+        "harmful_rate": 0.0029411764705882353
+      },
+      {
+        "update_count": 56,
+        "n": 340,
+        "mean_state_norm": 0.5224597432157573,
+        "mean_action_delta": 0.24650470967240193,
+        "harmful_rate": 0.0
+      }
+    ],
+    "online_reset": [
+      {
+        "update_count": 1,
+        "n": 500,
+        "mean_state_norm": 0.053308925777673724,
+        "mean_action_delta": 0.0150323868393898,
+        "harmful_rate": 0.002
+      },
+      {
+        "update_count": 2,
+        "n": 500,
+        "mean_state_norm": 0.09236840706318616,
+        "mean_action_delta": 0.027121011565439404,
+        "harmful_rate": 0.024
+      },
+      {
+        "update_count": 3,
+        "n": 500,
+        "mean_state_norm": 0.12408247396349907,
+        "mean_action_delta": 0.037647165925242004,
+        "harmful_rate": 0.066
+      },
+      {
+        "update_count": 4,
+        "n": 500,
+        "mean_state_norm": 0.150344252102077,
+        "mean_action_delta": 0.044171277792192994,
+        "harmful_rate": 0.068
+      },
+      {
+        "update_count": 5,
+        "n": 500,
+        "mean_state_norm": 0.05335049346089363,
+        "mean_action_delta": 0.014417136610951274,
+        "harmful_rate": 0.01
+      },
+      {
+        "update_count": 6,
+        "n": 500,
+        "mean_state_norm": 0.1013646463304758,
+        "mean_action_delta": 0.02907068072631955,
+        "harmful_rate": 0.03
+      },
+      {
+        "update_count": 7,
+        "n": 500,
+        "mean_state_norm": 0.1391880039870739,
+        "mean_action_delta": 0.03981174350343645,
+        "harmful_rate": 0.032
+      },
+      {
+        "update_count": 8,
+        "n": 500,
+        "mean_state_norm": 0.1699904003739357,
+        "mean_action_delta": 0.0489816809669137,
+        "harmful_rate": 0.05
+      },
+      {
+        "update_count": 9,
+        "n": 500,
+        "mean_state_norm": 0.07207013072445989,
+        "mean_action_delta": 0.02019312840048224,
+        "harmful_rate": 0.0
+      },
+      {
+        "update_count": 10,
+        "n": 500,
+        "mean_state_norm": 0.1130489094182849,
+        "mean_action_delta": 0.03768497957941145,
+        "harmful_rate": 0.018
+      },
+      {
+        "update_count": 11,
+        "n": 500,
+        "mean_state_norm": 0.1442758695036173,
+        "mean_action_delta": 0.050149394728243354,
+        "harmful_rate": 0.02
+      },
+      {
+        "update_count": 12,
+        "n": 500,
+        "mean_state_norm": 0.18277471505105494,
+        "mean_action_delta": 0.07082385185733438,
+        "harmful_rate": 0.016
+      },
+      {
+        "update_count": 13,
+        "n": 500,
+        "mean_state_norm": 0.09294276038184762,
+        "mean_action_delta": 0.04535368277225643,
+        "harmful_rate": 0.008
+      },
+      {
+        "update_count": 14,
+        "n": 500,
+        "mean_state_norm": 0.14323573630303144,
+        "mean_action_delta": 0.06447489072754979,
+        "harmful_rate": 0.004
+      },
+      {
+        "update_count": 15,
+        "n": 500,
+        "mean_state_norm": 0.193902103677392,
+        "mean_action_delta": 0.08357696083933115,
+        "harmful_rate": 0.016
+      },
+      {
+        "update_count": 16,
+        "n": 500,
+        "mean_state_norm": 0.23707778081297876,
+        "mean_action_delta": 0.10268768472224474,
+        "harmful_rate": 0.026
+      },
+      {
+        "update_count": 17,
+        "n": 500,
+        "mean_state_norm": 0.09223638503812254,
+        "mean_action_delta": 0.03240810203459114,
+        "harmful_rate": 0.004
+      },
+      {
+        "update_count": 18,
+        "n": 500,
+        "mean_state_norm": 0.14234526973217726,
+        "mean_action_delta": 0.05451387094240635,
+        "harmful_rate": 0.0
+      },
+      {
+        "update_count": 19,
+        "n": 500,
+        "mean_state_norm": 0.19267702456563712,
+        "mean_action_delta": 0.07940853166300803,
+        "harmful_rate": 0.002
+      },
+      {
+        "update_count": 20,
+        "n": 500,
+        "mean_state_norm": 0.2222093243151903,
+        "mean_action_delta": 0.0892773609450087,
+        "harmful_rate": 0.006
+      },
+      {
+        "update_count": 21,
+        "n": 500,
+        "mean_state_norm": 0.08777936735190452,
+        "mean_action_delta": 0.03431438611075282,
+        "harmful_rate": 0.002
+      },
+      {
+        "update_count": 22,
+        "n": 500,
+        "mean_state_norm": 0.1419376059062779,
+        "mean_action_delta": 0.05412045300379396,
+        "harmful_rate": 0.006
+      },
+      {
+        "update_count": 23,
+        "n": 491,
+        "mean_state_norm": 0.19409775523783718,
+        "mean_action_delta": 0.07099564174615045,
+        "harmful_rate": 0.010183299389002037
+      },
+      {
+        "update_count": 24,
+        "n": 480,
+        "mean_state_norm": 0.22967130318284035,
+        "mean_action_delta": 0.08526344933003809,
+        "harmful_rate": 0.010416666666666666
+      },
+      {
+        "update_count": 25,
+        "n": 457,
+        "mean_state_norm": 0.10931061275295212,
+        "mean_action_delta": 0.0467008829939116,
+        "harmful_rate": 0.00437636761487965
+      },
+      {
+        "update_count": 26,
+        "n": 442,
+        "mean_state_norm": 0.16771206409329067,
+        "mean_action_delta": 0.0729578327054655,
+        "harmful_rate": 0.006787330316742082
+      },
+      {
+        "update_count": 27,
+        "n": 429,
+        "mean_state_norm": 0.20617173184881676,
+        "mean_action_delta": 0.08443963995945829,
+        "harmful_rate": 0.009324009324009324
+      },
+      {
+        "update_count": 28,
+        "n": 408,
+        "mean_state_norm": 0.25033424185662,
+        "mean_action_delta": 0.10278582785680306,
+        "harmful_rate": 0.00980392156862745
+      },
+      {
+        "update_count": 29,
+        "n": 389,
+        "mean_state_norm": 0.11585604243823219,
+        "mean_action_delta": 0.05085919348518232,
+        "harmful_rate": 0.0
+      },
+      {
+        "update_count": 30,
+        "n": 373,
+        "mean_state_norm": 0.16424947894670208,
+        "mean_action_delta": 0.07022210480720205,
+        "harmful_rate": 0.002680965147453083
+      },
+      {
+        "update_count": 31,
+        "n": 351,
+        "mean_state_norm": 0.22899841891861708,
+        "mean_action_delta": 0.09819961310048558,
+        "harmful_rate": 0.005698005698005698
+      },
+      {
+        "update_count": 32,
+        "n": 343,
+        "mean_state_norm": 0.266742792208584,
+        "mean_action_delta": 0.10719777234767512,
+        "harmful_rate": 0.011661807580174927
+      },
+      {
+        "update_count": 33,
+        "n": 332,
+        "mean_state_norm": 0.08841756938855691,
+        "mean_action_delta": 0.03201421220921519,
+        "harmful_rate": 0.0030120481927710845
+      },
+      {
+        "update_count": 34,
+        "n": 316,
+        "mean_state_norm": 0.15366237236870617,
+        "mean_action_delta": 0.056089086157470186,
+        "harmful_rate": 0.0031645569620253164
+      },
+      {
+        "update_count": 35,
+        "n": 314,
+        "mean_state_norm": 0.19652477262695883,
+        "mean_action_delta": 0.07401226443730911,
+        "harmful_rate": 0.006369426751592357
+      },
+      {
+        "update_count": 36,
+        "n": 296,
+        "mean_state_norm": 0.2480471662019153,
+        "mean_action_delta": 0.09051692235673703,
+        "harmful_rate": 0.013513513513513514
+      },
+      {
+        "update_count": 37,
+        "n": 285,
+        "mean_state_norm": 0.09256920394928832,
+        "mean_action_delta": 0.029801796012345637,
+        "harmful_rate": 0.0
+      },
+      {
+        "update_count": 38,
+        "n": 280,
+        "mean_state_norm": 0.1645845761921789,
+        "mean_action_delta": 0.06581763333275116,
+        "harmful_rate": 0.0035714285714285713
+      },
+      {
+        "update_count": 39,
+        "n": 275,
+        "mean_state_norm": 0.22456664903597398,
+        "mean_action_delta": 0.08994875081560828,
+        "harmful_rate": 0.0
+      },
+      {
+        "update_count": 40,
+        "n": 274,
+        "mean_state_norm": 0.26099661381466543,
+        "mean_action_delta": 0.10033980225396417,
+        "harmful_rate": 0.0
+      },
+      {
+        "update_count": 41,
+        "n": 270,
+        "mean_state_norm": 0.09361627747960112,
+        "mean_action_delta": 0.03265079551341909,
+        "harmful_rate": 0.0
+      },
+      {
+        "update_count": 42,
+        "n": 269,
+        "mean_state_norm": 0.14432755091182584,
+        "mean_action_delta": 0.05955210987125354,
+        "harmful_rate": 0.0037174721189591076
+      },
+      {
+        "update_count": 43,
+        "n": 257,
+        "mean_state_norm": 0.1761502289731447,
+        "mean_action_delta": 0.0703445917307055,
+        "harmful_rate": 0.0
+      },
+      {
+        "update_count": 44,
+        "n": 255,
+        "mean_state_norm": 0.21492795967588238,
+        "mean_action_delta": 0.08575601419251339,
+        "harmful_rate": 0.00392156862745098
+      },
+      {
+        "update_count": 45,
+        "n": 253,
+        "mean_state_norm": 0.06833446135545672,
+        "mean_action_delta": 0.02182815029569294,
+        "harmful_rate": 0.0
+      },
+      {
+        "update_count": 46,
+        "n": 246,
+        "mean_state_norm": 0.11574629700280786,
+        "mean_action_delta": 0.03812465143420287,
+        "harmful_rate": 0.0
+      },
+      {
+        "update_count": 47,
+        "n": 245,
+        "mean_state_norm": 0.16207666619091618,
+        "mean_action_delta": 0.05439016592441773,
+        "harmful_rate": 0.0
+      },
+      {
+        "update_count": 48,
+        "n": 245,
+        "mean_state_norm": 0.2068571870272257,
+        "mean_action_delta": 0.08013453842045701,
+        "harmful_rate": 0.0
+      },
+      {
+        "update_count": 49,
+        "n": 245,
+        "mean_state_norm": 0.08091067237665459,
+        "mean_action_delta": 0.03171933040935166,
+        "harmful_rate": 0.0
+      },
+      {
+        "update_count": 50,
+        "n": 245,
+        "mean_state_norm": 0.13016068513448142,
+        "mean_action_delta": 0.05011188112085267,
+        "harmful_rate": 0.0
+      },
+      {
+        "update_count": 51,
+        "n": 245,
+        "mean_state_norm": 0.17934040139828408,
+        "mean_action_delta": 0.06843714977861667,
+        "harmful_rate": 0.0
+      },
+      {
+        "update_count": 52,
+        "n": 245,
+        "mean_state_norm": 0.2163481319285169,
+        "mean_action_delta": 0.08248426411300898,
+        "harmful_rate": 0.0
+      },
+      {
+        "update_count": 53,
+        "n": 245,
+        "mean_state_norm": 0.07857002023303387,
+        "mean_action_delta": 0.030602969197860482,
+        "harmful_rate": 0.0
+      },
+      {
+        "update_count": 54,
+        "n": 240,
+        "mean_state_norm": 0.12058402155525982,
+        "mean_action_delta": 0.04212947786242391,
+        "harmful_rate": 0.0
+      },
+      {
+        "update_count": 55,
+        "n": 237,
+        "mean_state_norm": 0.1633238363460901,
+        "mean_action_delta": 0.05696254188218449,
+        "harmful_rate": 0.0
+      },
+      {
+        "update_count": 56,
+        "n": 235,
+        "mean_state_norm": 0.19736245972044925,
+        "mean_action_delta": 0.06942621702526477,
+        "harmful_rate": 0.0
+      }
+    ],
+    "buffer_offline": [
+      {
+        "update_count": 0,
+        "n": 21790,
+        "mean_state_norm": 0.035557310561619156,
+        "mean_action_delta": 0.019913627506577176,
+        "harmful_rate": 0.0
+      }
+    ]
+  }
+}

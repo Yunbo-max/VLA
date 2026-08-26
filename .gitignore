@@ -1,0 +1,20 @@
+# Local environments and caches
+.venv/
+.hf-cache/
+.pytest_cache/
+__pycache__/
+*.pyc
+
+# Downloaded model/data (documented in configs/provenance.json)
+checkpoints/
+data/
+third_party/
+
+# Raw rollout logs are large; compact metrics and plots are tracked.
+results/*.jsonl
+results/smoke/
+results/pilot_task0_seed0_cam5.jsonl
+
+# Local/runtime files
+*.log
+.DS_Store

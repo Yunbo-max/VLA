@@ -1,0 +1,263 @@
+{
+  "selected": {
+    "shift_id": "cam10_obj0_0_act0_grip0",
+    "records": 9,
+    "valid": 9,
+    "successes": 5,
+    "success_rate": 0.5555555555555556,
+    "shift": {
+      "camera_roll_deg": 10.0,
+      "object_dx_cm": 0,
+      "object_dy_cm": 0,
+      "action_bias": 0,
+      "gripper_delay_steps": 0,
+      "object_info": null
+    }
+  },
+  "criterion": "lowest frozen success among shifts with >=9 valid pairs",
+  "shifts": [
+    {
+      "shift_id": "cam10_obj0_0_act0_grip0",
+      "records": 9,
+      "valid": 9,
+      "successes": 5,
+      "success_rate": 0.5555555555555556,
+      "shift": {
+        "camera_roll_deg": 10.0,
+        "object_dx_cm": 0,
+        "object_dy_cm": 0,
+        "action_bias": 0,
+        "gripper_delay_steps": 0,
+        "object_info": null
+      }
+    },
+    {
+      "shift_id": "cam0_obj0_0_act0.005_grip0",
+      "records": 9,
+      "valid": 9,
+      "successes": 7,
+      "success_rate": 0.7777777777777778,
+      "shift": {
+        "camera_roll_deg": 0,
+        "object_dx_cm": 0,
+        "object_dy_cm": 0,
+        "action_bias": 0.005,
+        "gripper_delay_steps": 0,
+        "object_info": null
+      }
+    },
+    {
+      "shift_id": "cam0_obj0_0_act0.01_grip0",
+      "records": 9,
+      "valid": 9,
+      "successes": 7,
+      "success_rate": 0.7777777777777778,
+      "shift": {
+        "camera_roll_deg": 0,
+        "object_dx_cm": 0,
+        "object_dy_cm": 0,
+        "action_bias": 0.01,
+        "gripper_delay_steps": 0,
+        "object_info": null
+      }
+    },
+    {
+      "shift_id": "cam0_obj0_0_act0.02_grip0",
+      "records": 9,
+      "valid": 9,
+      "successes": 7,
+      "success_rate": 0.7777777777777778,
+      "shift": {
+        "camera_roll_deg": 0,
+        "object_dx_cm": 0,
+        "object_dy_cm": 0,
+        "action_bias": 0.02,
+        "gripper_delay_steps": 0,
+        "object_info": null
+      }
+    },
+    {
+      "shift_id": "cam0_obj0_0_act0_grip1",
+      "records": 9,
+      "valid": 9,
+      "successes": 7,
+      "success_rate": 0.7777777777777778,
+      "shift": {
+        "camera_roll_deg": 0,
+        "object_dx_cm": 0,
+        "object_dy_cm": 0,
+        "action_bias": 0,
+        "gripper_delay_steps": 1,
+        "object_info": null
+      }
+    },
+    {
+      "shift_id": "cam0_obj0_0_act0_grip2",
+      "records": 9,
+      "valid": 9,
+      "successes": 7,
+      "success_rate": 0.7777777777777778,
+      "shift": {
+        "camera_roll_deg": 0,
+        "object_dx_cm": 0,
+        "object_dy_cm": 0,
+        "action_bias": 0,
+        "gripper_delay_steps": 2,
+        "object_info": null
+      }
+    },
+    {
+      "shift_id": "cam0_obj1_0_act0_grip0",
+      "records": 9,
+      "valid": 9,
+      "successes": 7,
+      "success_rate": 0.7777777777777778,
+      "shift": {
+        "camera_roll_deg": 0,
+        "object_dx_cm": 1.0,
+        "object_dy_cm": 0,
+        "action_bias": 0,
+        "gripper_delay_steps": 0,
+        "object_info": {
+          "joint": "akita_black_bowl_1_joint0",
+          "bddl_target_object": "akita_black_bowl_1",
+          "requested_xy_m": [
+            0.01,
+            0.0
+          ],
+          "accepted_xy_m": [
+            -0.01,
+            -0.0
+          ],
+          "before_xyz": [
+            -0.06347439952612711,
+            0.20202570582559568,
+            0.8984070750976497
+          ],
+          "after_xyz": [
+            -0.07347439952612701,
+            0.2020257058255956,
+            0.8984070750980836
+          ]
+        }
+      }
+    },
+    {
+      "shift_id": "cam0_obj2_0_act0_grip0",
+      "records": 9,
+      "valid": 9,
+      "successes": 7,
+      "success_rate": 0.7777777777777778,
+      "shift": {
+        "camera_roll_deg": 0,
+        "object_dx_cm": 2.0,
+        "object_dy_cm": 0,
+        "action_bias": 0,
+        "gripper_delay_steps": 0,
+        "object_info": {
+          "joint": "akita_black_bowl_1_joint0",
+          "bddl_target_object": "akita_black_bowl_1",
+          "requested_xy_m": [
+            0.02,
+            0.0
+          ],
+          "accepted_xy_m": [
+            0.02,
+            0.0
+          ],
+          "before_xyz": [
+            -0.06347439952612711,
+            0.20202570582559568,
+            0.8984070750976497
+          ],
+          "after_xyz": [
+            -0.041642512407076074,
+            0.20171981230346647,
+            0.9178822573067067
+          ]
+        }
+      }
+    },
+    {
+      "shift_id": "cam0_obj4_0_act0_grip0",
+      "records": 9,
+      "valid": 9,
+      "successes": 7,
+      "success_rate": 0.7777777777777778,
+      "shift": {
+        "camera_roll_deg": 0,
+        "object_dx_cm": 4.0,
+        "object_dy_cm": 0,
+        "action_bias": 0,
+        "gripper_delay_steps": 0,
+        "object_info": {
+          "joint": "akita_black_bowl_1_joint0",
+          "bddl_target_object": "akita_black_bowl_1",
+          "requested_xy_m": [
+            0.04,
+            0.0
+          ],
+          "accepted_xy_m": [
+            -0.04,
+            -0.0
+          ],
+          "before_xyz": [
+            -0.06347439952612711,
+            0.20202570582559568,
+            0.8984070750976497
+          ],
+          "after_xyz": [
+            -0.1032849904386135,
+            0.20203538234371796,
+            0.898579220487327
+          ]
+        }
+      }
+    },
+    {
+      "shift_id": "cam2_obj0_0_act0_grip0",
+      "records": 9,
+      "valid": 9,
+      "successes": 7,
+      "success_rate": 0.7777777777777778,
+      "shift": {
+        "camera_roll_deg": 2.0,
+        "object_dx_cm": 0,
+        "object_dy_cm": 0,
+        "action_bias": 0,
+        "gripper_delay_steps": 0,
+        "object_info": null
+      }
+    },
+    {
+      "shift_id": "cam5_obj0_0_act0_grip0",
+      "records": 9,
+      "valid": 9,
+      "successes": 7,
+      "success_rate": 0.7777777777777778,
+      "shift": {
+        "camera_roll_deg": 5.0,
+        "object_dx_cm": 0,
+        "object_dy_cm": 0,
+        "action_bias": 0,
+        "gripper_delay_steps": 0,
+        "object_info": null
+      }
+    },
+    {
+      "shift_id": "cam0_obj0_0_act0_grip0",
+      "records": 9,
+      "valid": 9,
+      "successes": 8,
+      "success_rate": 0.8888888888888888,
+      "shift": {
+        "camera_roll_deg": 0,
+        "object_dx_cm": 0,
+        "object_dy_cm": 0,
+        "action_bias": 0,
+        "gripper_delay_steps": 0,
+        "object_info": null
+      }
+    }
+  ]
+}
