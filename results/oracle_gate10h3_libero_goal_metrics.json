@@ -1,0 +1,117 @@
+{
+  "oracle_record_n": 10,
+  "overall_success_rate": 0.7,
+  "paired": {
+    "paired_n": 10,
+    "frozen_success_n": 7,
+    "frozen_failure_n": 3,
+    "negative_adaptation_n": 1,
+    "positive_adaptation_n": 1,
+    "nar": 0.14285714285714285,
+    "par": 0.3333333333333333
+  },
+  "task_cluster_bootstrap": {
+    "task_n": 10,
+    "task_ids": [
+      0,
+      1,
+      2,
+      3,
+      4,
+      5,
+      6,
+      7,
+      8,
+      9
+    ],
+    "paired_n": 10,
+    "frozen_success_n": 7,
+    "frozen_failure_n": 3,
+    "negative_adaptation_n": 1,
+    "positive_adaptation_n": 1,
+    "nar": 0.14285714285714285,
+    "par": 0.3333333333333333,
+    "nar_95ci_task_cluster": [
+      0.0,
+      0.4444444444444444
+    ],
+    "par_95ci_task_cluster": [
+      0.0,
+      1.0
+    ]
+  },
+  "delta_nar_persistent_minus_reset": {
+    "task_n": 10,
+    "paired_frozen_success_n": 70,
+    "delta_nar_left_minus_right": 0.21428571428571427,
+    "ci_95_task_cluster": [
+      0.08695652173913043,
+      0.38095238095238093
+    ]
+  },
+  "delta_nar_oracle_minus_persistent": {
+    "task_n": 7,
+    "paired_frozen_success_n": 7,
+    "delta_nar_left_minus_right": -0.14285714285714285,
+    "ci_95_task_cluster": [
+      -0.42857142857142855,
+      0.0
+    ]
+  },
+  "oracle": {
+    "proposed_updates": 30,
+    "committed_updates": 4,
+    "commit_rate": 0.13333333333333333,
+    "consolidation_harm_n": 0,
+    "consolidation_harm_rate": 0.0,
+    "utility_positive_n": 4,
+    "utility_zero_n": 26,
+    "utility_negative_n": 0,
+    "utility_distribution": [
+      0,
+      0,
+      0,
+      0,
+      0,
+      1,
+      0,
+      0,
+      1,
+      0,
+      0,
+      0,
+      0,
+      0,
+      1,
+      0,
+      1,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0
+    ],
+    "drift_by_committed_update_count": [
+      {
+        "committed_update_count": 0,
+        "n": 1252,
+        "mean_state_norm": 0.0,
+        "mean_action_delta": 0.00023861469986577767
+      },
+      {
+        "committed_update_count": 1,
+        "n": 378,
+        "mean_state_norm": 0.12264824802519153,
+        "mean_action_delta": 0.027385775387908023
+      }
+    ]
+  }
+}

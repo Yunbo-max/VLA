@@ -1,0 +1,117 @@
+{
+  "oracle_record_n": 10,
+  "overall_success_rate": 0.4,
+  "paired": {
+    "paired_n": 10,
+    "frozen_success_n": 3,
+    "frozen_failure_n": 7,
+    "negative_adaptation_n": 0,
+    "positive_adaptation_n": 1,
+    "nar": 0.0,
+    "par": 0.14285714285714285
+  },
+  "task_cluster_bootstrap": {
+    "task_n": 10,
+    "task_ids": [
+      0,
+      1,
+      2,
+      3,
+      4,
+      5,
+      6,
+      7,
+      8,
+      9
+    ],
+    "paired_n": 10,
+    "frozen_success_n": 3,
+    "frozen_failure_n": 7,
+    "negative_adaptation_n": 0,
+    "positive_adaptation_n": 1,
+    "nar": 0.0,
+    "par": 0.14285714285714285,
+    "nar_95ci_task_cluster": [
+      0.0,
+      0.0
+    ],
+    "par_95ci_task_cluster": [
+      0.0,
+      0.4444444444444444
+    ]
+  },
+  "delta_nar_persistent_minus_reset": {
+    "task_n": 10,
+    "paired_frozen_success_n": 49,
+    "delta_nar_left_minus_right": 0.4897959183673469,
+    "ci_95_task_cluster": [
+      0.34615384615384615,
+      0.6668032786885225
+    ]
+  },
+  "delta_nar_oracle_minus_persistent": {
+    "task_n": 3,
+    "paired_frozen_success_n": 3,
+    "delta_nar_left_minus_right": -0.6666666666666666,
+    "ci_95_task_cluster": [
+      -1.0,
+      0.0
+    ]
+  },
+  "oracle": {
+    "proposed_updates": 30,
+    "committed_updates": 3,
+    "commit_rate": 0.1,
+    "consolidation_harm_n": 0,
+    "consolidation_harm_rate": 0.0,
+    "utility_positive_n": 3,
+    "utility_zero_n": 27,
+    "utility_negative_n": 0,
+    "utility_distribution": [
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      1,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      1,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      1
+    ],
+    "drift_by_committed_update_count": [
+      {
+        "committed_update_count": 0,
+        "n": 1858,
+        "mean_state_norm": 0.0,
+        "mean_action_delta": 0.0002274906312379148
+      },
+      {
+        "committed_update_count": 1,
+        "n": 372,
+        "mean_state_norm": 0.07883725726916906,
+        "mean_action_delta": 0.02289927379423452
+      }
+    ]
+  }
+}
