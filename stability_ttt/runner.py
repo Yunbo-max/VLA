@@ -344,7 +344,8 @@ class ProbeRunner:
         the current tentative update persists.
         """
         base = branch_env.envs[branch_index]
-        self._restore_base_runtime(base, snapshot)
+        for branch_base in branch_env.envs:
+            self._restore_base_runtime(branch_base, snapshot)
         raw = base._env.regenerate_obs_from_state(snapshot["sim_state"])
         observation = _batch_observation(base._format_raw_obs(raw))
         delay = deque(delay_values, maxlen=max(1, self.cfg.gripper_delay_steps + 1))
@@ -363,6 +364,10 @@ class ProbeRunner:
                 actions[0, 6] = delay[0]
             step_actions = np.zeros((2, actions.shape[1]), dtype=np.float32)
             step_actions[branch_index] = actions[0]
+            # SyncVectorEnv steps both workers. Keep the non-target worker
+            # alive and irrelevant so a prior dummy step cannot make the next
+            # vector step fail with "executing action in terminated episode".
+            self._restore_base_runtime(branch_env.envs[1 - branch_index], snapshot)
             observations, _, terminated, truncated, info = branch_env.step(step_actions)
             observation = _select_observation(observations, branch_index)
             values = info.get("is_success", False) if isinstance(info, dict) else False
