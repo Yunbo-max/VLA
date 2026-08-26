@@ -344,8 +344,7 @@ class ProbeRunner:
         the current tentative update persists.
         """
         base = branch_env.envs[branch_index]
-        for branch_base in branch_env.envs:
-            self._restore_base_runtime(branch_base, snapshot)
+        self._restore_base_runtime(base, snapshot)
         raw = base._env.regenerate_obs_from_state(snapshot["sim_state"])
         observation = _batch_observation(base._format_raw_obs(raw))
         delay = deque(delay_values, maxlen=max(1, self.cfg.gripper_delay_steps + 1))
@@ -362,20 +361,15 @@ class ProbeRunner:
             delay.append(float(actions[0, 6]))
             if self.cfg.gripper_delay_steps and len(delay) > self.cfg.gripper_delay_steps:
                 actions[0, 6] = delay[0]
-            step_actions = np.zeros((2, actions.shape[1]), dtype=np.float32)
-            step_actions[branch_index] = actions[0]
-            # SyncVectorEnv steps both workers. Keep the non-target worker
-            # alive and irrelevant so a prior dummy step cannot make the next
-            # vector step fail with "executing action in terminated episode".
-            self._restore_base_runtime(branch_env.envs[1 - branch_index], snapshot)
-            observations, _, terminated, truncated, info = branch_env.step(step_actions)
-            observation = _select_observation(observations, branch_index)
+            # Step only the target Libero worker directly.  Calling the vector
+            # wrapper would advance an irrelevant dummy worker and force a
+            # costly state restore on every step.
+            observation, _, terminated, truncated, info = base.step(actions[0])
+            observation = _batch_observation(observation)
             values = info.get("is_success", False) if isinstance(info, dict) else False
             success_values = np.asarray(values, dtype=bool).reshape(-1)
-            success = bool(success_values[branch_index])
-            term_values = np.asarray(terminated).reshape(-1)
-            trunc_values = np.asarray(truncated).reshape(-1)
-            if success or bool(term_values[branch_index] or trunc_values[branch_index]):
+            success = bool(success_values[0])
+            if success or bool(terminated or truncated):
                 break
         return success
 
