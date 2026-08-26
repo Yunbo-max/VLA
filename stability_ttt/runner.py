@@ -51,6 +51,11 @@ class ProbeConfig:
     harmful_margin: float = 0.02
     action_error_threshold: float = 0.35
     max_steps: int | None = None
+    # Optional wall-clock budget for oracle pilot runs.  When set, only this
+    # many oracle consolidation decisions are probed per episode; later
+    # decisions are left untouched (no unvalidated persistence).  The
+    # terminal-success counterfactual itself remains exact for every probe.
+    oracle_max_updates: int | None = None
     device: str = "cuda"
 
     @property
@@ -423,6 +428,7 @@ class ProbeRunner:
         observation, object_info = self._reset(env, seed)
         residual = fixed_residual.clone()
         delay = deque(maxlen=max(1, self.cfg.gripper_delay_steps + 1))
+        oracle_updates_used = 0
         steps = []
         max_steps = env.call("_max_episode_steps")[0]
         success = False
@@ -433,6 +439,18 @@ class ProbeRunner:
                 condition in ("online_persistent", "online_reset", ORACLE_CONDITION)
                 and step % self.cfg.update_interval == 0
             )
+            if (
+                condition == ORACLE_CONDITION
+                and self.cfg.oracle_max_updates is not None
+                and oracle_updates_used >= self.cfg.oracle_max_updates
+            ):
+                # Time-bounded pilot: once the probe budget is exhausted we
+                # stop proposing updates rather than silently committing an
+                # unvalidated update.  This keeps the measured effect tied to
+                # selective consolidation.
+                update = False
+            if condition == ORACLE_CONDITION and update:
+                oracle_updates_used += 1
             base_norm, proxy, state = self._actions_and_proxy(observation, description, seed, step, update)
             residual_before = residual.clone()
             tentative = residual_before.clone()
@@ -543,6 +561,8 @@ class ProbeRunner:
                 "clip": self.cfg.residual_clip,
                 "proxy_roll_deg": self.cfg.proxy_roll_deg,
                 "oracle": condition == ORACLE_CONDITION,
+                "oracle_max_updates": self.cfg.oracle_max_updates,
+                "oracle_updates_used": oracle_updates_used,
             },
             "steps": steps,
         }
@@ -611,6 +631,7 @@ def main():
     parser.add_argument("--action-bias", type=float, default=0)
     parser.add_argument("--gripper-delay-steps", type=int, default=0)
     parser.add_argument("--max-steps", type=int)
+    parser.add_argument("--oracle-max-updates", type=int)
     args = parser.parse_args()
     cfg = ProbeConfig(**vars(args))
     runner = ProbeRunner(cfg)
