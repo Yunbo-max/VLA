@@ -25,6 +25,7 @@ from .reference import ExpertActionReference
 
 
 CONDITIONS = ("frozen", "online_persistent", "online_reset", "buffer_offline")
+ORACLE_CONDITION = "oracle_selective_commit"
 
 
 @dataclass
@@ -102,6 +103,10 @@ def _noise(policy, seed: int, step: int) -> torch.Tensor:
     )
 
 
+def _noise_batch(policy, seeds: list[int], step: int) -> torch.Tensor:
+    return torch.cat([_noise(policy, seed, step) for seed in seeds], dim=0)
+
+
 def _normalized_action(policy, batch, noise):
     policy.reset()
     return policy.predict_action_chunk(batch, noise=noise)[:, 0, :]
@@ -111,6 +116,12 @@ def _to_env_action(action, postprocessor, env_postprocessor) -> np.ndarray:
     transition = {ACTION: postprocessor(action)}
     action = env_postprocessor(transition)[ACTION]
     return action.detach().cpu().numpy()[0].astype(np.float32)
+
+
+def _to_env_actions(action, postprocessor, env_postprocessor) -> np.ndarray:
+    transition = {ACTION: postprocessor(action)}
+    action = env_postprocessor(transition)[ACTION]
+    return action.detach().cpu().numpy().astype(np.float32)
 
 
 def _set_init_state_id(vec_env, seed: int) -> None:
@@ -185,6 +196,18 @@ def _batch_observation(single: dict[str, Any]) -> dict[str, Any]:
     return add_batch(single)
 
 
+def _stack_observations(observations: list[dict[str, Any]]) -> dict[str, Any]:
+    """Stack two raw formatted observations for matched branch inference."""
+    first = observations[0]
+
+    def stack(values):
+        if isinstance(values[0], dict):
+            return {key: stack([value[key] for value in values]) for key in values[0]}
+        return np.concatenate([np.asarray(value)[None, ...] for value in values], axis=0)
+
+    return stack(observations)
+
+
 class ProbeRunner:
     def __init__(self, cfg: ProbeConfig):
         self.cfg = cfg
@@ -204,11 +227,20 @@ class ProbeRunner:
             env_cfg=self.env_cfg, policy_cfg=policy_cfg
         )
         self.envs = make_env(self.env_cfg, n_envs=1, use_async_envs=False)
+        self.oracle_envs = None
+        if ORACLE_CONDITION in cfg.conditions:
+            # Two simulator instances are used only for the commit / rollback
+            # probe. Their observations are batched into one model forward,
+            # while each simulator remains independent.
+            self.oracle_envs = make_env(self.env_cfg, n_envs=2, use_async_envs=False)
         self.references: dict[int, ExpertActionReference] = {}
 
     def close(self):
         for env in self.envs[self.cfg.suite].values():
             env.close()
+        if self.oracle_envs is not None:
+            for env in self.oracle_envs[self.cfg.suite].values():
+                env.close()
 
     def _reset(self, env, seed: int):
         _set_init_state_id(env, seed)
@@ -255,8 +287,99 @@ class ProbeRunner:
         residual = self.cfg.update_eta * torch.stack(proxies).mean(dim=0)
         return residual.clamp(-self.cfg.residual_clip, self.cfg.residual_clip)
 
+    @staticmethod
+    def _runtime_snapshot(env):
+        """Capture simulator and task-clock state for matched counterfactuals."""
+        task = env.envs[0]._env.env
+        return {
+            "sim_state": np.array(env.envs[0]._env.get_sim_state(), copy=True),
+            "timestep": int(task.timestep),
+            "cur_time": float(task.cur_time),
+            "done": bool(task.done),
+        }
+
+    @staticmethod
+    def _restore_runtime(env, snapshot):
+        ProbeRunner._restore_base_runtime(env.envs[0], snapshot)
+
+    @staticmethod
+    def _restore_base_runtime(base, snapshot):
+        task = base._env.env
+        base._env.set_state(np.array(snapshot["sim_state"], copy=True))
+        task.timestep = snapshot["timestep"]
+        task.cur_time = snapshot["cur_time"]
+        task.done = snapshot["done"]
+
+    @staticmethod
+    def _success_from_info(info) -> bool:
+        value = info.get("is_success", False) if isinstance(info, dict) else False
+        array = np.asarray(value).reshape(-1)
+        return bool(array[0]) if array.size else bool(value)
+
+    def _oracle_branch(
+        self,
+        env,
+        task_id: int,
+        description: str,
+        seed: int,
+        start_step: int,
+        snapshot: dict[str, Any],
+        rollback_residual: torch.Tensor,
+        commit_residual: torch.Tensor,
+        delay_values: list[float],
+    ) -> bool:
+        """Roll forward from an exact state with adaptation frozen.
+
+        The branch uses only the supplied fixed residual. It never computes or
+        applies a new proxy update, so the sole manipulated variable is whether
+        the current tentative update persists.
+        """
+        if self.oracle_envs is None:
+            raise RuntimeError("oracle branch environments were not initialized")
+        branch_env = self.oracle_envs[self.cfg.suite][task_id]
+        if branch_env.envs[0]._env is None:
+            branch_env.reset(seed=[seed, seed])
+        residuals = [rollback_residual, commit_residual]
+        observations = []
+        for base in branch_env.envs:
+            self._restore_base_runtime(base, snapshot)
+            raw = base._env.regenerate_obs_from_state(snapshot["sim_state"])
+            observations.append(base._format_raw_obs(raw))
+        observation = _stack_observations(observations)
+        delays = [
+            deque(delay_values, maxlen=max(1, self.cfg.gripper_delay_steps + 1)),
+            deque(delay_values, maxlen=max(1, self.cfg.gripper_delay_steps + 1)),
+        ]
+        success = np.zeros(2, dtype=bool)
+        active = np.ones(2, dtype=bool)
+        max_steps = branch_env.call("_max_episode_steps")[0]
+        for branch_step in range(start_step, max_steps):
+            shifted = _camera_shift(observation, self.cfg.camera_roll_deg)
+            batch, _ = _policy_batch(shifted, description, self.env_preprocessor, self.preprocessor)
+            base_norm = _normalized_action(
+                self.policy,
+                batch,
+                _noise_batch(self.policy, [seed, seed], branch_step),
+            )
+            adapted_norm = base_norm + torch.cat(residuals, dim=0)
+            actions = _to_env_actions(adapted_norm, self.postprocessor, self.env_postprocessor)
+            if self.cfg.action_bias:
+                actions[:, :3] = np.clip(actions[:, :3] + self.cfg.action_bias, -1, 1)
+            for index, delay in enumerate(delays):
+                delay.append(float(actions[index, 6]))
+                if self.cfg.gripper_delay_steps and len(delay) > self.cfg.gripper_delay_steps:
+                    actions[index, 6] = delay[0]
+            observation, _, terminated, truncated, info = branch_env.step(actions)
+            values = info.get("is_success", np.zeros(2, dtype=bool)) if isinstance(info, dict) else np.zeros(2, dtype=bool)
+            values = np.asarray(values, dtype=bool).reshape(-1)
+            success |= values[:2] & active
+            active &= ~(np.asarray(terminated, dtype=bool) | np.asarray(truncated, dtype=bool))
+            if not active.any():
+                break
+        return bool(success[1]), bool(success[0])
+
     def run_episode(self, task_id: int, seed: int, condition: str) -> dict[str, Any]:
-        if condition not in CONDITIONS:
+        if condition not in CONDITIONS and condition != ORACLE_CONDITION:
             raise ValueError(condition)
         env = self.envs[self.cfg.suite][task_id]
         description = env.call("task_description")[0]
@@ -275,13 +398,24 @@ class ProbeRunner:
         for step in range(max_steps):
             if condition == "online_reset" and step and step % self.cfg.reset_horizon == 0:
                 residual.zero_()
-            update = condition in ("online_persistent", "online_reset") and step % self.cfg.update_interval == 0
+            update = (
+                condition in ("online_persistent", "online_reset", ORACLE_CONDITION)
+                and step % self.cfg.update_interval == 0
+            )
             base_norm, proxy, state = self._actions_and_proxy(observation, description, seed, step, update)
             residual_before = residual.clone()
+            tentative = residual_before.clone()
             if update:
-                residual.mul_(self.cfg.residual_decay).add_(self.cfg.update_eta * proxy)
-                residual.clamp_(-self.cfg.residual_clip, self.cfg.residual_clip)
+                tentative = (
+                    residual_before * self.cfg.residual_decay + self.cfg.update_eta * proxy
+                ).clamp(-self.cfg.residual_clip, self.cfg.residual_clip)
+                if condition != ORACLE_CONDITION:
+                    residual = tentative.clone()
             adapted_norm = base_norm if condition == "frozen" else base_norm + residual
+            if condition == ORACLE_CONDITION:
+                # The current action uses the tentative update; persistence is
+                # decided only after observing its consequence.
+                adapted_norm = base_norm + tentative
             base_action = _to_env_action(base_norm, self.postprocessor, self.env_postprocessor)
             action = _to_env_action(adapted_norm, self.postprocessor, self.env_postprocessor)
             if self.cfg.action_bias:
@@ -295,18 +429,55 @@ class ProbeRunner:
             state_ood = expert_distance > reference.support_threshold
             harmful = bool(update and not state_ood and adapted_error > base_error + self.cfg.harmful_margin)
             action_delta = float(np.linalg.norm(action - base_action))
+            delay_values = list(delay)
             observation, reward, terminated, truncated, info = env.step(action[None])
-            success = bool(info.get("is_success", np.array([False]))[0])
+            success = success or self._success_from_info(info)
+            oracle_commit = False
+            oracle_g_commit = None
+            oracle_g_rollback = None
+            oracle_utility = None
+            if condition == ORACLE_CONDITION and update and not bool(terminated[0] or truncated[0]):
+                snapshot = self._runtime_snapshot(env)
+                oracle_g_commit, oracle_g_rollback = self._oracle_branch(
+                    env,
+                    task_id,
+                    description,
+                    seed,
+                    step + 1,
+                    snapshot,
+                    residual_before,
+                    tentative,
+                    delay_values,
+                )
+                self._restore_runtime(env, snapshot)
+                oracle_utility = int(oracle_g_commit) - int(oracle_g_rollback)
+                oracle_commit = oracle_utility > 0
+                residual = tentative.clone() if oracle_commit else residual_before.clone()
+            elif condition == ORACLE_CONDITION and update:
+                # No future remains; U=0 by definition, so do not persist an
+                # update that cannot affect a subsequent action.
+                oracle_g_commit = bool(success)
+                oracle_g_rollback = bool(success)
+                oracle_utility = 0
+                residual = residual_before.clone()
+            if condition == ORACLE_CONDITION and not update:
+                residual = residual_before.clone()
             steps.append(
                 {
                     "t": step,
                     "error": state_ood or adapted_error > reference.error_threshold,
                     "state_ood": state_ood,
                     "update_applied": update,
+                    "update_committed": oracle_commit if condition == ORACLE_CONDITION else update,
                     "harmful_update": harmful,
                     "proxy_norm": float(proxy.norm().item()),
                     "adaptive_state_norm": float(residual.norm().item()),
                     "adaptive_state_delta_norm": float((residual - residual_before).norm().item()),
+                    "tentative_state_norm": float(tentative.norm().item()),
+                    "tentative_update_norm": float((tentative - residual_before).norm().item()),
+                    "oracle_g_commit": oracle_g_commit,
+                    "oracle_g_rollback": oracle_g_rollback,
+                    "consolidation_utility": oracle_utility,
                     "action_delta_l2": action_delta,
                     "base_expert_error": base_error,
                     "adapted_expert_error": adapted_error,
@@ -340,6 +511,7 @@ class ProbeRunner:
                 "decay": self.cfg.residual_decay,
                 "clip": self.cfg.residual_clip,
                 "proxy_roll_deg": self.cfg.proxy_roll_deg,
+                "oracle": condition == ORACLE_CONDITION,
             },
             "steps": steps,
         }
