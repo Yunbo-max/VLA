@@ -208,6 +208,16 @@ def _stack_observations(observations: list[dict[str, Any]]) -> dict[str, Any]:
     return stack(observations)
 
 
+def _select_observation(batch: dict[str, Any], index: int) -> dict[str, Any]:
+    """Select one batch element while retaining its leading batch dimension."""
+    def select(value):
+        if isinstance(value, dict):
+            return {key: select(item) for key, item in value.items()}
+        return np.asarray(value)[index : index + 1]
+
+    return select(batch)
+
+
 class ProbeRunner:
     def __init__(self, cfg: ProbeConfig):
         self.cfg = cfg
@@ -316,6 +326,54 @@ class ProbeRunner:
         array = np.asarray(value).reshape(-1)
         return bool(array[0]) if array.size else bool(value)
 
+    def _oracle_single_branch(
+        self,
+        branch_env,
+        branch_index: int,
+        description: str,
+        seed: int,
+        start_step: int,
+        snapshot: dict[str, Any],
+        residual: torch.Tensor,
+        delay_values: list[float],
+    ) -> bool:
+        """Roll one matched branch from an exact state with adaptation frozen.
+
+        The branch uses only the supplied fixed residual. It never computes or
+        applies a new proxy update, so the sole manipulated variable is whether
+        the current tentative update persists.
+        """
+        base = branch_env.envs[branch_index]
+        self._restore_base_runtime(base, snapshot)
+        raw = base._env.regenerate_obs_from_state(snapshot["sim_state"])
+        observation = _batch_observation(base._format_raw_obs(raw))
+        delay = deque(delay_values, maxlen=max(1, self.cfg.gripper_delay_steps + 1))
+        success = False
+        max_steps = branch_env.call("_max_episode_steps")[0]
+        for branch_step in range(start_step, max_steps):
+            shifted = _camera_shift(observation, self.cfg.camera_roll_deg)
+            batch, _ = _policy_batch(shifted, description, self.env_preprocessor, self.preprocessor)
+            base_norm = _normalized_action(self.policy, batch, _noise(self.policy, seed, branch_step))
+            adapted_norm = base_norm + residual
+            actions = _to_env_actions(adapted_norm, self.postprocessor, self.env_postprocessor)
+            if self.cfg.action_bias:
+                actions[0, :3] = np.clip(actions[0, :3] + self.cfg.action_bias, -1, 1)
+            delay.append(float(actions[0, 6]))
+            if self.cfg.gripper_delay_steps and len(delay) > self.cfg.gripper_delay_steps:
+                actions[0, 6] = delay[0]
+            step_actions = np.zeros((2, actions.shape[1]), dtype=np.float32)
+            step_actions[branch_index] = actions[0]
+            observations, _, terminated, truncated, info = branch_env.step(step_actions)
+            observation = _select_observation(observations, branch_index)
+            values = info.get("is_success", False) if isinstance(info, dict) else False
+            success_values = np.asarray(values, dtype=bool).reshape(-1)
+            success = bool(success_values[branch_index])
+            term_values = np.asarray(terminated).reshape(-1)
+            trunc_values = np.asarray(truncated).reshape(-1)
+            if success or bool(term_values[branch_index] or trunc_values[branch_index]):
+                break
+        return success
+
     def _oracle_branch(
         self,
         env,
@@ -327,56 +385,30 @@ class ProbeRunner:
         rollback_residual: torch.Tensor,
         commit_residual: torch.Tensor,
         delay_values: list[float],
-    ) -> bool:
-        """Roll forward from an exact state with adaptation frozen.
+    ) -> tuple[bool, bool]:
+        """Evaluate U exactly, short-circuiting when commit already fails.
 
-        The branch uses only the supplied fixed residual. It never computes or
-        applies a new proxy update, so the sole manipulated variable is whether
-        the current tentative update persists.
+        Since terminal success is binary, a failed commit implies
+        ``G_commit - G_rollback <= 0`` regardless of the rollback branch.  The
+        rollback branch is therefore only simulated when commit succeeds; this
+        is an exact optimization, not a changed oracle criterion.
         """
         if self.oracle_envs is None:
             raise RuntimeError("oracle branch environments were not initialized")
         branch_env = self.oracle_envs[self.cfg.suite][task_id]
         if branch_env.envs[0]._env is None:
             branch_env.reset(seed=[seed, seed])
-        residuals = [rollback_residual, commit_residual]
-        observations = []
-        for base in branch_env.envs:
-            self._restore_base_runtime(base, snapshot)
-            raw = base._env.regenerate_obs_from_state(snapshot["sim_state"])
-            observations.append(base._format_raw_obs(raw))
-        observation = _stack_observations(observations)
-        delays = [
-            deque(delay_values, maxlen=max(1, self.cfg.gripper_delay_steps + 1)),
-            deque(delay_values, maxlen=max(1, self.cfg.gripper_delay_steps + 1)),
-        ]
-        success = np.zeros(2, dtype=bool)
-        active = np.ones(2, dtype=bool)
-        max_steps = branch_env.call("_max_episode_steps")[0]
-        for branch_step in range(start_step, max_steps):
-            shifted = _camera_shift(observation, self.cfg.camera_roll_deg)
-            batch, _ = _policy_batch(shifted, description, self.env_preprocessor, self.preprocessor)
-            base_norm = _normalized_action(
-                self.policy,
-                batch,
-                _noise_batch(self.policy, [seed, seed], branch_step),
-            )
-            adapted_norm = base_norm + torch.cat(residuals, dim=0)
-            actions = _to_env_actions(adapted_norm, self.postprocessor, self.env_postprocessor)
-            if self.cfg.action_bias:
-                actions[:, :3] = np.clip(actions[:, :3] + self.cfg.action_bias, -1, 1)
-            for index, delay in enumerate(delays):
-                delay.append(float(actions[index, 6]))
-                if self.cfg.gripper_delay_steps and len(delay) > self.cfg.gripper_delay_steps:
-                    actions[index, 6] = delay[0]
-            observation, _, terminated, truncated, info = branch_env.step(actions)
-            values = info.get("is_success", np.zeros(2, dtype=bool)) if isinstance(info, dict) else np.zeros(2, dtype=bool)
-            values = np.asarray(values, dtype=bool).reshape(-1)
-            success |= values[:2] & active
-            active &= ~(np.asarray(terminated, dtype=bool) | np.asarray(truncated, dtype=bool))
-            if not active.any():
-                break
-        return bool(success[1]), bool(success[0])
+        commit_success = self._oracle_single_branch(
+            branch_env, 1, description, seed, start_step, snapshot,
+            commit_residual, delay_values,
+        )
+        if not commit_success:
+            return False, False
+        rollback_success = self._oracle_single_branch(
+            branch_env, 0, description, seed, start_step, snapshot,
+            rollback_residual, delay_values,
+        )
+        return True, rollback_success
 
     def run_episode(self, task_id: int, seed: int, condition: str) -> dict[str, Any]:
         if condition not in CONDITIONS and condition != ORACLE_CONDITION:
